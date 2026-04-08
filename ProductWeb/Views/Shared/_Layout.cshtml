@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Product Catalog — Manajemen produk dengan ASP.NET Core MVC" />
+    <title>@ViewData["Title"] — Product Catalog</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <!-- Bootstrap Icons -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet" />
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+</head>
+<body>
+
+    <!-- ── NAVBAR ─────────────────────────────────────────────────────────── -->
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top" id="mainNavbar">
+        <div class="container">
+            <a class="navbar-brand fw-bold" asp-controller="Product" asp-action="Index">
+                <i class="bi bi-box-seam me-2 text-warning"></i>ProductCatalog
+            </a>
+
+            <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
+                    data-bs-target="#navContent" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navContent">
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" asp-controller="Product" asp-action="Index">
+                            <i class="bi bi-grid me-1"></i>Produk
+                        </a>
+                    </li>
+                    @if (Context.Session.GetString("Role") == "Admin")
+                    {
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Product" asp-action="Create">
+                                <i class="bi bi-plus-circle me-1"></i>Tambah Produk
+                            </a>
+                        </li>
+                    }
+                </ul>
+
+                <!-- User info & logout -->
+                <div class="d-flex align-items-center gap-3">
+                    @if (!string.IsNullOrEmpty(Context.Session.GetString("Username")))
+                    {
+                        <span class="text-white-50 small">
+                            <i class="bi bi-person-circle me-1"></i>
+                            @Context.Session.GetString("Username")
+                            <span class="badge ms-1 @(Context.Session.GetString("Role") == "Admin" ? "bg-warning text-dark" : "bg-secondary")">
+                                @Context.Session.GetString("Role")
+                            </span>
+                        </span>
+
+                        <form asp-controller="Auth" asp-action="Logout" method="post" class="mb-0">
+                            <button type="submit" class="btn btn-outline-light btn-sm">
+                                <i class="bi bi-box-arrow-right me-1"></i>Logout
+                            </button>
+                        </form>
+                    }
+                    else
+                    {
+                        <a asp-controller="Auth" asp-action="Login" class="btn btn-outline-light btn-sm">
+                            <i class="bi bi-box-arrow-in-right me-1"></i>Login
+                        </a>
+                    }
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- ── MAIN CONTENT ────────────────────────────────────────────────────── -->
+    <main class="py-4">
+        <div class="container">
+
+            <!-- Alert notifikasi global dari TempData -->
+            @if (TempData["Success"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show d-flex align-items-center gap-2 mb-4" role="alert">
+                    <i class="bi bi-check-circle-fill fs-5"></i>
+                    <span>@TempData["Success"]</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+            @if (TempData["Error"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show d-flex align-items-center gap-2 mb-4" role="alert">
+                    <i class="bi bi-exclamation-triangle-fill fs-5"></i>
+                    <span>@TempData["Error"]</span>
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                </div>
+            }
+
+            @RenderBody()
+        </div>
+    </main>
+
+    <!-- ── FOOTER ──────────────────────────────────────────────────────────── -->
+    <footer class="py-4 mt-auto" id="mainFooter">
+        <div class="container text-center">
+            <p class="text-white-50 small mb-0">
+                <i class="bi bi-code-slash me-1"></i>
+                ProductCatalog &copy; @DateTime.Now.Year — NQA .NET Training Day 4
+            </p>
+        </div>
+    </footer>
+
+    <!-- Bootstrap 5 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Custom JS -->
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

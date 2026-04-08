@@ -1,0 +1,70 @@
+@model ProductWeb.Models.RegisterRequest
+
+@{
+    ViewData["Title"] = "Daftar Akun Baru";
+}
+
+<div class="row justify-content-center">
+    <div class="col-md-5 col-lg-4">
+        <!-- Card Frame -->
+        <div class="card border-0 glass-card">
+            <div class="card-body p-4 p-md-5">
+                
+                <!-- Logo / Header -->
+                <div class="text-center mb-5">
+                    <div class="d-inline-flex align-items-center justify-content-center rounded-circle bg-warning-subtle text-warning mb-3"
+                         style="width: 64px; height: 64px;">
+                        <i class="bi bi-person-plus-fill fs-2"></i>
+                    </div>
+                    <h2 class="h4 fw-bold text-white mb-1">Daftar Akun Baru</h2>
+                    <p class="text-white-50 small mb-0">Silakan isi detail untuk membuat profil</p>
+                </div>
+
+                <!-- Form -->
+                <form asp-action="Register" method="post">
+                    <div asp-validation-summary="ModelOnly" class="alert alert-danger py-2 small mb-4" role="alert"></div>
+
+                    <!-- Username -->
+                    <div class="mb-4">
+                        <label asp-for="Username" class="form-label text-white-50 small fw-semibold">USERNAME</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary">
+                                <i class="bi bi-person text-white-50"></i>
+                            </span>
+                            <input asp-for="Username" class="form-control form-control-dark" placeholder="Masukkan username unik..." />
+                        </div>
+                        <span asp-validation-for="Username" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Password -->
+                    <div class="mb-5">
+                        <label asp-for="Password" class="form-label text-white-50 small fw-semibold">PASSWORD</label>
+                        <div class="input-group">
+                            <span class="input-group-text bg-dark border-secondary">
+                                <i class="bi bi-lock text-white-50"></i>
+                            </span>
+                            <input asp-for="Password" type="password" class="form-control form-control-dark" />
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger small mt-1 d-block"></span>
+                    </div>
+
+                    <!-- Tombol Utama -->
+                    <button type="submit" class="btn btn-warning w-100 fw-bold mb-3 py-2">
+                        Buat Akun Anda
+                    </button>
+                    
+                    <!-- Link Fallback Login -->
+                    <div class="text-center">
+                        <span class="text-white-50 small">Sudah memiliki akun? </span>
+                        <a asp-action="Login" class="text-warning text-decoration-none small fw-semibold">Login di sini</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

@@ -1,0 +1,132 @@
+@model ProductWeb.Models.Product
+
+@{
+    ViewData["Title"] = "Tambah Produk";
+}
+
+<!-- ── Breadcrumb ──────────────────────────────────────────────────────────── -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a asp-action="Index" class="text-warning text-decoration-none">
+                <i class="bi bi-grid me-1"></i>Produk
+            </a>
+        </li>
+        <li class="breadcrumb-item active text-white-50">Tambah Produk</li>
+    </ol>
+</nav>
+
+<div class="row justify-content-center">
+    <div class="col-lg-7">
+        <div class="card border-0 glass-card">
+            <div class="card-header border-0 pb-0 bg-transparent">
+                <h1 class="h4 fw-bold text-white mb-1">
+                    <i class="bi bi-plus-circle me-2 text-warning"></i>Tambah Produk Baru
+                </h1>
+                <p class="text-white-50 small">Isi semua field di bawah untuk menambahkan produk</p>
+            </div>
+            <div class="card-body pt-3">
+                <form asp-action="Create" asp-controller="Product" method="post" id="createForm">
+
+                    <!-- Validation summary -->
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger d-flex align-items-start gap-2 mb-3">
+                            <i class="bi bi-exclamation-triangle-fill mt-1"></i>
+                            <div>
+                                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                                {
+                                    <div>@error.ErrorMessage</div>
+                                }
+                            </div>
+                        </div>
+                    }
+
+                    <!-- Nama Produk -->
+                    <div class="mb-3">
+                        <label for="Name" class="form-label text-white-50 small fw-semibold">NAMA PRODUK <span class="text-danger">*</span></label>
+                        <input id="Name" name="Name" type="text"
+                               class="form-control form-control-dark"
+                               placeholder="Contoh: Laptop ASUS ROG Strix"
+                               value="@Model?.Name"
+                               required />
+                    </div>
+
+                    <!-- Deskripsi -->
+                    <div class="mb-3">
+                        <label for="Description" class="form-label text-white-50 small fw-semibold">DESKRIPSI</label>
+                        <textarea id="Description" name="Description" rows="3"
+                                  class="form-control form-control-dark"
+                                  placeholder="Deskripsikan produk secara singkat...">@Model?.Description</textarea>
+                    </div>
+
+                    <!-- Harga & Stok -->
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label for="Price" class="form-label text-white-50 small fw-semibold">HARGA (Rp) <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <span class="input-group-text bg-dark border-secondary text-white-50">Rp</span>
+                                <input id="Price" name="Price" type="number" min="0" step="1000"
+                                       class="form-control form-control-dark"
+                                       placeholder="0"
+                                       value="@Model?.Price"
+                                       required />
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <label for="Stock" class="form-label text-white-50 small fw-semibold">STOK <span class="text-danger">*</span></label>
+                            <div class="input-group">
+                                <input id="Stock" name="Stock" type="number" min="0"
+                                       class="form-control form-control-dark"
+                                       placeholder="0"
+                                       value="@Model?.Stock"
+                                       required />
+                                <span class="input-group-text bg-dark border-secondary text-white-50">unit</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Kategori -->
+                    <div class="mb-4">
+                        <label for="Category" class="form-label text-white-50 small fw-semibold">KATEGORI <span class="text-danger">*</span></label>
+                        <input id="Category" name="Category" type="text"
+                               class="form-control form-control-dark"
+                               list="categoryList"
+                               placeholder="Contoh: Electronics, Accessories, etc."
+                               value="@Model?.Category"
+                               required />
+                        <datalist id="categoryList">
+                            <option value="Electronics" />
+                            <option value="Accessories" />
+                            <option value="Clothing" />
+                            <option value="Food & Beverage" />
+                            <option value="Home & Living" />
+                            <option value="Sports" />
+                            <option value="Books" />
+                        </datalist>
+                    </div>
+
+                    <!-- Actions -->
+                    <div class="d-flex gap-3">
+                        <button type="submit" class="btn btn-warning fw-semibold px-4" id="btnSave">
+                            <i class="bi bi-check-circle me-2"></i>Simpan Produk
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary px-4">
+                            <i class="bi bi-x-circle me-2"></i>Batal
+                        </a>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.getElementById('createForm').addEventListener('submit', function () {
+            const btn = document.getElementById('btnSave');
+            btn.innerHTML = '<span class="spinner-border spinner-border-sm me-2"></span>Menyimpan...';
+            btn.disabled = true;
+        });
+    </script>
+}

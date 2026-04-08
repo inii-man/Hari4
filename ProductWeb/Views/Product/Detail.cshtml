@@ -1,0 +1,163 @@
+@model ProductWeb.Models.Product
+
+@{
+    ViewData["Title"] = Model?.Name ?? "Detail Produk";
+}
+
+<!-- ── Breadcrumb ──────────────────────────────────────────────────────────── -->
+<nav aria-label="breadcrumb" class="mb-4">
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item">
+            <a asp-action="Index" class="text-warning text-decoration-none">
+                <i class="bi bi-grid me-1"></i>Produk
+            </a>
+        </li>
+        <li class="breadcrumb-item active text-white-50">@Model?.Name</li>
+    </ol>
+</nav>
+
+<div class="row g-4">
+    <!-- ── Info Utama ──────────────────────────────────────────────────────── -->
+    <div class="col-lg-8">
+        <div class="card border-0 glass-card h-100">
+            <div class="card-body p-4">
+                <!-- Header -->
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap gap-2">
+                    <div>
+                        <span class="badge badge-category mb-2">@Model?.Category</span>
+                        <h1 class="h3 fw-bold text-white mb-2">@Model?.Name</h1>
+                    </div>
+                    <div class="d-flex gap-2">
+                        @if (Context.Session.GetString("Role") == "Admin")
+                        {
+                            <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-outline-warning btn-sm">
+                                <i class="bi bi-pencil me-1"></i>Edit
+                            </a>
+                        }
+                    </div>
+                </div>
+
+                <!-- Deskripsi -->
+                <div class="mb-4">
+                    <p class="text-white-50 small fw-semibold mb-1">DESKRIPSI</p>
+                    <p class="text-white">
+                        @(string.IsNullOrEmpty(Model?.Description) ? "Tidak ada deskripsi." : Model.Description)
+                    </p>
+                </div>
+
+                <!-- Detail info -->
+                <hr class="border-secondary" />
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <p class="text-white-50 small fw-semibold mb-1">ID PRODUK</p>
+                        <p class="text-white fw-semibold">#@Model?.Id</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <p class="text-white-50 small fw-semibold mb-1">HARGA</p>
+                        <p class="text-warning fw-bold fs-5">Rp @Model?.Price.ToString("N0")</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <p class="text-white-50 small fw-semibold mb-1">STOK</p>
+                        <p class="text-white fw-semibold">@Model?.Stock unit</p>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <p class="text-white-50 small fw-semibold mb-1">DIBUAT</p>
+                        <p class="text-white small">@Model?.CreatedAt.ToLocalTime().ToString("dd MMM yyyy")</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ── Status Card ─────────────────────────────────────────────────────── -->
+    <div class="col-lg-4">
+        <div class="card border-0 glass-card mb-3">
+            <div class="card-body p-4">
+                <h6 class="text-white-50 small fw-semibold mb-3">STATUS STOK</h6>
+
+                @{
+                    var stockPct = Model?.Stock > 0 ? Math.Min(Model!.Stock * 100 / 100, 100) : 0;
+                    var barClass = Model?.Stock > 10 ? "bg-success" : (Model?.Stock > 0 ? "bg-warning" : "bg-danger");
+                    var statusText = Model?.Stock > 10 ? "Tersedia" : (Model?.Stock > 0 ? "Stok Rendah" : "Habis");
+                    var statusBadge = Model?.Stock > 10 ? "bg-success-subtle text-success" : (Model?.Stock > 0 ? "bg-warning-subtle text-warning" : "bg-danger-subtle text-danger");
+                }
+
+                <div class="d-flex justify-content-between align-items-center mb-2">
+                    <span class="text-white fw-bold fs-4">@Model?.Stock</span>
+                    <span class="badge @statusBadge">@statusText</span>
+                </div>
+                <div class="progress bg-secondary" style="height: 6px;">
+                    <div class="progress-bar @barClass" style="width: @stockPct%"></div>
+                </div>
+                <p class="text-white-50 small mt-2 mb-0">@Model?.Stock unit tersisa</p>
+            </div>
+        </div>
+
+        <!-- Tombol aksi -->
+        <div class="card border-0 glass-card">
+            <div class="card-body p-4">
+                <h6 class="text-white-50 small fw-semibold mb-3">AKSI</h6>
+                <div class="d-grid gap-2">
+                    @if (Context.Session.GetString("Role") == "Admin")
+                    {
+                        <a asp-action="Edit" asp-route-id="@Model?.Id" class="btn btn-warning">
+                            <i class="bi bi-pencil me-2"></i>Edit Produk
+                        </a>
+                        <button type="button" class="btn btn-outline-danger"
+                                onclick="confirmDelete(@Model?.Id, '@Html.Raw(Model?.Name?.Replace("'", "\\'"))')">
+                            <i class="bi bi-trash me-2"></i>Hapus Produk
+                        </button>
+                    }
+                    <a asp-action="Index" class="btn btn-outline-secondary">
+                        <i class="bi bi-arrow-left me-2"></i>Kembali ke Daftar
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ── Hidden Delete Form ──────────────────────────────────────────────────── -->
+<form id="deleteForm" asp-action="Delete" asp-controller="Product" method="post" class="d-none">
+    <input type="hidden" id="deleteId" name="id" value="@Model?.Id" />
+</form>
+
+<!-- ── Delete Modal ────────────────────────────────────────────────────────── -->
+<div class="modal fade" id="deleteModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content bg-dark border-secondary">
+            <div class="modal-header border-secondary">
+                <h5 class="modal-title text-white">
+                    <i class="bi bi-exclamation-triangle-fill text-danger me-2"></i>Konfirmasi Hapus
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body text-white-50">
+                Apakah Anda yakin ingin menghapus produk
+                <strong class="text-white" id="deleteName"></strong>?
+                <br /><span class="small text-danger">Tindakan ini tidak bisa dibatalkan.</span>
+            </div>
+            <div class="modal-footer border-secondary">
+                <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Batal</button>
+                <button type="button" class="btn btn-danger" id="btnConfirmDelete">
+                    <i class="bi bi-trash me-2"></i>Ya, Hapus
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        const deleteModal = new bootstrap.Modal(document.getElementById('deleteModal'));
+
+        function confirmDelete(id, name) {
+            document.getElementById('deleteName').textContent = name;
+            deleteModal.show();
+        }
+
+        document.getElementById('btnConfirmDelete').addEventListener('click', function () {
+            document.getElementById('deleteForm').submit();
+        });
+    </script>
+}
