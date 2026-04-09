@@ -33,9 +33,7 @@
                         <i class="bi bi-search text-white-50"></i>
                     </span>
                     <input type="text" name="search" class="form-control form-control-dark"
-                           placeholder="Nama, deskripsi, atau kategori..."
-                           id="searchInput"
-                           value="@ViewBag.Search" />
+                        placeholder="Nama, deskripsi, atau kategori..." id="searchInput" value="@ViewBag.Search" />
                 </div>
             </div>
             <div class="col-md-4">
@@ -64,10 +62,10 @@
 @if (!Model.Any())
 {
     <div class="text-center py-5">
-        <i class="bi bi-box text-white-50 display-1 mb-3 d-block"></i>
-        <h5 class="text-white-50">Tidak ada produk ditemukan</h5>
-        <p class="text-white-50 small">Coba ubah filter pencarian atau tambah produk baru</p>
-        @if (Context.Session.GetString("Role") == "Admin")
+    <i class="bi bi-box text-white-50 display-1 mb-3 d-block"></i>
+    <h5 class="text-white-50">Tidak ada produk ditemukan</h5>
+    <p class="text-white-50 small">Coba ubah filter pencarian atau tambah produk baru</p>
+    @if (Context.Session.GetString("Role") == "Admin")
         {
             <a asp-action="Create" class="btn btn-warning mt-2">
                 <i class="bi bi-plus-circle me-2"></i>Tambah Produk Pertama
@@ -78,29 +76,29 @@
 else
 {
     <div class="card border-0 glass-card">
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-dark table-hover mb-0 align-middle" id="productTable">
-                    <thead>
-                        <tr class="table-header-row">
-                            <th class="ps-4 py-3">#</th>
-                            <th>Nama Produk</th>
-                            <th>Kategori</th>
-                            <th>Harga</th>
-                            <th>Stok</th>
-                            <th class="text-center">Status</th>
-                            <th class="text-center pe-4">Aksi</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var item in Model)
+    <div class="card-body p-0">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover mb-0 align-middle" id="productTable">
+                <thead>
+                    <tr class="table-header-row">
+                        <th class="ps-4 py-3">#</th>
+                        <th>Nama Produk</th>
+                        <th>Kategori</th>
+                        <th>Harga</th>
+                        <th>Stok</th>
+                        <th class="text-center">Status</th>
+                        <th class="text-center pe-4">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
                         {
                             <tr class="product-row">
                                 <td class="ps-4 text-white-50 small">@item.Id</td>
                                 <td>
                                     <div class="fw-semibold text-white">@item.Name</div>
                                     <div class="text-white-50 small text-truncate" style="max-width: 220px;"
-                                         title="@item.Description">
+                                        title="@item.Description">
                                         @item.Description
                                     </div>
                                 </td>
@@ -130,19 +128,19 @@ else
                                 </td>
                                 <td class="text-center pe-4">
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a asp-action="Detail" asp-route-id="@item.Id"
-                                           class="btn btn-outline-light btn-sm" title="Detail">
+                                        <a asp-action="Detail" asp-route-id="@item.Id" class="btn btn-outline-light btn-sm"
+                                            title="Detail">
                                             <i class="bi bi-eye"></i>
                                         </a>
                                         @if (Context.Session.GetString("Role") == "Admin")
                                         {
-                                            <a asp-action="Edit" asp-route-id="@item.Id"
-                                               class="btn btn-outline-warning btn-sm" title="Edit">
+                                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-outline-warning btn-sm"
+                                                title="Edit">
                                                 <i class="bi bi-pencil"></i>
                                             </a>
                                             <button type="button" class="btn btn-outline-danger btn-sm"
-                                                    onclick="confirmDelete(@item.Id, '@Html.Raw(item.Name.Replace("'", "\\'"))')"
-                                                    title="Hapus">
+                                                onclick="confirmDelete(@item.Id, '@Html.Raw(item.Name.Replace("'", "\\'"))')"
+                                                title="Hapus">
                                                 <i class="bi bi-trash"></i>
                                             </button>
                                         }
@@ -162,36 +160,30 @@ else
                     <ul class="pagination pagination-sm justify-content-center mb-0">
                         <!-- Prev -->
                         <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
-                            <a class="page-link bg-dark border-secondary text-white-50" 
-                               asp-action="Index" 
-                               asp-route-search="@ViewBag.Search" 
-                               asp-route-category="@ViewBag.Category" 
-                               asp-route-page="@(ViewBag.CurrentPage - 1)">
+                            <a class="page-link bg-dark border-secondary text-white-50" asp-action="Index"
+                                asp-route-search="@ViewBag.Search" asp-route-category="@ViewBag.Category"
+                                asp-route-page="@(ViewBag.CurrentPage - 1)">
                                 Previous
                             </a>
                         </li>
-                        
+
                         <!-- Pages -->
                         @for (int i = 1; i <= ViewBag.TotalPages; i++)
                         {
                             <li class="page-item @(i == ViewBag.CurrentPage ? "active" : "")">
-                                <a class="page-link @(i == ViewBag.CurrentPage ? "bg-warning text-dark border-warning fw-bold" : "bg-dark border-secondary text-white")" 
-                                   asp-action="Index" 
-                                   asp-route-search="@ViewBag.Search" 
-                                   asp-route-category="@ViewBag.Category" 
-                                   asp-route-page="@i">
+                                <a class="page-link @(i == ViewBag.CurrentPage ? "bg-warning text-dark border-warning fw-bold" : "bg-dark border-secondary text-white")"
+                                    asp-action="Index" asp-route-search="@ViewBag.Search" asp-route-category="@ViewBag.Category"
+                                    asp-route-page="@i">
                                     @i
                                 </a>
                             </li>
                         }
-                        
+
                         <!-- Next -->
                         <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
-                            <a class="page-link bg-dark border-secondary text-white-50" 
-                               asp-action="Index" 
-                               asp-route-search="@ViewBag.Search" 
-                               asp-route-category="@ViewBag.Category" 
-                               asp-route-page="@(ViewBag.CurrentPage + 1)">
+                            <a class="page-link bg-dark border-secondary text-white-50" asp-action="Index"
+                                asp-route-search="@ViewBag.Search" asp-route-category="@ViewBag.Category"
+                                asp-route-page="@(ViewBag.CurrentPage + 1)">
                                 Next
                             </a>
                         </li>

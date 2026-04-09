@@ -66,10 +66,10 @@
                             <label for="Price" class="form-label text-white-50 small fw-semibold">HARGA (Rp) <span class="text-danger">*</span></label>
                             <div class="input-group">
                                 <span class="input-group-text bg-dark border-secondary text-white-50">Rp</span>
-                                <input id="Price" name="Price" type="number" min="0" step="1000"
+                                <input id="Price" name="Price" type="number" min="0" step="any"
                                        class="form-control form-control-dark"
                                        placeholder="0"
-                                       value="@Model?.Price"
+                                       value="@(Model?.Price == 0 ? "" : string.Format(System.Globalization.CultureInfo.InvariantCulture, "{0:0.##}", Model?.Price))"
                                        required />
                             </div>
                         </div>
